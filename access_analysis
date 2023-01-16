@@ -15,7 +15,7 @@ myip=$(curl --silent inet-ip.info)
 AWS=`printf '\033[32m%s\033[m\n' 'AWS!!'`
 
 # ログの有無をチェック
-if [ ! -f $access_log ]; then
+if [ -z "$(ls $access_log)" ]; then
     echo "/var/log/httpd/*access_log not found"
 else
     echo "次のログを調査します" $access_log_name
@@ -50,7 +50,7 @@ fi
 rm -f apache_output.txt
 
 #１時間前
-if [ ! -f $access_log ]; then
+if [ -z "$(ls $access_log)" ]; then
     echo "/var/log/httpd/*access_log not found"
 else
     echo "↓"$(date --date="-1 hour" "+%Y/%m/%d %H"時代\(現在時刻\)のアクセス)"↓"
