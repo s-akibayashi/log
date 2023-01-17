@@ -17,7 +17,7 @@ default() {
 access_log=$(find /var/log/httpd/ -follow -name "*access_log")
 access_log_name=$(find /var/log/httpd/ -follow -name "*access_log")
 # ログの有無をチェック
-if [ -z "$(ls $access_log)" ]; then
+if [[ "$access_log"="" ]; then
     echo "access_log not found"
 else
     echo "次のログを調査します" $access_log_name
@@ -55,7 +55,7 @@ fi
 rm -f apache_output.txt
 
 #１時間前
-if [ -z "$(ls $access_log)" ]; then
+if [[ "$access_log"="" ]; then
     echo "/var/log/httpd/*access_log not found"
 else
     echo "↓"$(date --date="-1 hour" "+%Y/%m/%d %H"時代\(現在時刻\)のアクセス)"↓"
@@ -98,7 +98,7 @@ echo "where access_log directory"
 read access_log_directry
 access_log_name=$(find $access_log_directry -follow -name "*access_log")
 # ログの有無をチェック
-if [ -z "$(ls $access_log)" ]; then
+if [[ "$access_log"="" ]; then
     echo "access_log not found"
 else
     echo "次のログを調査します" $access_log_name
@@ -136,7 +136,7 @@ fi
 rm -f apache_output.txt
 
 #１時間前
-if [ -z "$(ls $access_log)" ]; then
+if [[ "$access_log"="" ]; then
     echo "/var/log/httpd/*access_log not found"
 else
     echo "↓"$(date --date="-1 hour" "+%Y/%m/%d %H"時代\(現在時刻\)のアクセス)"↓"
