@@ -110,6 +110,5 @@ rm -f apache_output.txt
     echo "$IP_COUNT $IP $whois_ip_print ${aws:+$AWS}"
     done
     echo "-----------------------------------------------------------------------------"
-fi
 
 rm -f apache_output.txt
