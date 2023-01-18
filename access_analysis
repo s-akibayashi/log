@@ -77,9 +77,6 @@ fi
 rm -f apache_output.txt
 
 #１時間前
-if [ -z "$access_log" ] || [ ! -e "$access_log" ]; then
-    echo "/var/log/httpd/*access_log not found"
-else
     echo "↓"$(date --date="-1 hour" "+%Y/%m/%d %H"時代\(現在時刻\)のアクセス)"↓"
     echo "-----------------------------------------------------------------------------"
     echo "ドメイン 最多IP(/32) 最多IP(/24) 最多IP(/16)" >> apache_output.txt 
