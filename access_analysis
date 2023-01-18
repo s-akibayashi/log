@@ -4,8 +4,8 @@
 rm -f apache_output.txt
 
 # whoisコマンドがインストールされていない場合はインストールする
-if ! command -v whois  &> /dev/null; then
-  yum install -y whois &> /dev/null
+if ! command -v whois &> /dev/null; then
+  yum install -y whois
 fi
 
 if ! command -v whois &> /dev/null; then
@@ -33,7 +33,7 @@ fi
 access_log=$(find ${access_log_path} -follow -name "*access_log")
 # ログの有無をチェック
 
-if [ -z "$access_log" ] || [ ! -e "$access_log" ]; then
+if [ -z "$access_log" ] ; then
     echo "access_log not found"
     echo "default path is \"/var/log/httpd/\""
     exit 1
