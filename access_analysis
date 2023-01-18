@@ -4,8 +4,8 @@
 rm -f apache_output.txt
 
 # whoisコマンドがインストールされていない場合はインストールする
-if ! command -v whois &> /dev/null; then
-  yum install -y whois
+if ! command -v whois  &> /dev/null; then
+  yum install -y whois &> /dev/null
 fi
 
 if ! command -v whois &> /dev/null; then
