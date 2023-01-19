@@ -27,7 +27,7 @@ while getopts "d:" opt; do
 done
 
 if [ -z "$access_log_path" ]; then
-  access_log_path="/var/log/httpd/"
+  access_log_path="/var/log/"
 fi
 
 access_log=$(find ${access_log_path} -follow -name "*access_log")
