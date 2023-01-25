@@ -100,7 +100,7 @@ rm -f apache_output.txt
         whois_ip=$(whois $IP |grep -i "country" | awk '{print $NF}' |sort | uniq -c | sort -nr | head -n 1 | awk '{print $NF}')
         if [ "$whois_ip" = "JP" ]; then
             whois_ip_print=`printf '\033[31m%s\033[m\n' "JP"`
-            aws=`whois $IP |grep -i "aws"`
+            aws=`whois $IP |grep -i "Amazon"`
         else
             whois_ip_print="$whois_ip"
         fi
