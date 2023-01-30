@@ -12,12 +12,7 @@ if ! command -v whois &> /dev/null; then
   echo "whoisコマンドをインストールできませんでした。"
 fi
 
-myip=$(curl --silent inet-ip.info)
-AWS=`printf '\033[32m%s\033[m\n' 'AWS!!'`
-LOCAL_IP='^192\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|^172\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|^[0-9]{1,3}\.0\.0\.0'
-
-# 対象のログファイル
-
+# -dでログファイルパス変更オプション
 while getopts "d:" opt; do
   case $opt in
     d)
@@ -31,6 +26,10 @@ if [ -z "$access_log_path" ]; then
 fi
 
 access_log=$(find ${access_log_path} -follow -name "*access_log")
+myip=$(curl --silent inet-ip.info)
+AWS=`printf '\033[32m%s\033[m\n' 'AWS!!'`
+LOCAL_IP='^192\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|^172\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|^[0-9]{1,3}\.0\.0\.0'
+
 # ログの有無をチェック
 
 if [ -z "$access_log" ] ; then
