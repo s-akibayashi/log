@@ -29,10 +29,11 @@ access_log=$(find ${access_log_path} -follow -name "*access_log")
 myip=$(curl --silent inet-ip.info)
 AWS=`printf '\033[32m%s\033[m\n' 'AWS!!'`
 LOCAL_IP='^192\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|^172\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|^[0-9]{1,3}\.0\.0\.0'
+NOISIP='^[0-9]+\.[0]+0$sort'
 
 # ログの有無をチェック
 
-if [ -z ${access_log} ] ; then
+if [ -z "$access_log" ] ; then
     echo "access_log not found"
     echo "default path is \"/var/log/httpd/\""
     exit 1
@@ -41,14 +42,14 @@ else
     echo "↓"$(date "+%Y/%m/%d %H"時代\(現在時刻\)のアクセス)"↓"
     echo "-----------------------------------------------------------------------------"
     echo 'ドメイン 最多IP(/32) 最多IP(/24) 最多IP(/16)' >> apache_output.txt
-    grep -h $(date +"%d/%b/%Y:%H:") ${access_log} | grep -Ev "${LOCAL_IP}" | grep -v "$myip" | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 10 | while read count domain ; do
-        count_and_ip=$(grep -h $(date +"%d/%b/%Y:%H:") ${access_log} | grep $domain | awk '{print $1}' | sort | uniq -c | sort -nr | head -n 1 )
+    grep -h $(date +"%d/%b/%Y:%H:") $access_log | grep -Ev "${LOCAL_IP}" | grep -v "$myip" | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 10 | while read count domain ; do
+        count_and_ip=$(grep -h $(date +"%d/%b/%Y:%H:") $access_log | grep $domain | awk '{print $1}' | sort | uniq -c | sort -nr | head -n 1 )
         ip_count=$(echo ${count_and_ip} | awk '{print $1}')
         ip=$(echo ${count_and_ip} | awk '{print $2}')
-        count_and_ip_24=$(grep -h $(date +"%d/%b/%Y:%H:") ${access_log} | grep $domain | grep -Ev "${LOCAL_IP}" | grep -Eo '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.' | sort | uniq -c | sort -nr | head -n 1 )
+        count_and_ip_24=$(grep -h $(date +"%d/%b/%Y:%H:") $access_log | grep $domain | grep -Ev "${LOCAL_IP}" | grep -Eo '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.' | sort | uniq -c | sort -nr | head -n 1 )
         ip_count_24=$(echo ${count_and_ip_24} | awk '{print $1}')
         ip_24=$(echo ${count_and_ip_24} | awk '{print $2}')
-        count_and_ip_16=$(grep -h $(date +"%d/%b/%Y:%H:") ${access_log} | grep $domain | grep -Ev "${LOCAL_IP}" | grep -Eo '^[0-9]{1,3}\.[0-9]{1,3}\.' | sort | uniq -c | sort -nr | head -n 1 )
+        count_and_ip_16=$(grep -h $(date +"%d/%b/%Y:%H:") $access_log | grep $domain | grep -Ev "${LOCAL_IP}" | grep -Eo '^[0-9]{1,3}\.[0-9]{1,3}\.' | sort | uniq -c | sort -nr | head -n 1 )
         ip_count_16=$(echo ${count_and_ip_16} | awk '{print $1}')
         ip_16=$(echo ${count_and_ip_16} | awk '{print $2}')
         echo "[${count}]${domain} [${ip_count}]${ip} [${ip_count_24}]${ip_24} [${ip_count_16}]${ip_16}" >> apache_output.txt
@@ -56,7 +57,7 @@ else
     column -t < apache_output.txt
     echo ""
     echo "whois check"
-    grep -h $(date +"%d/%b/%Y:%H:") ${access_log} |grep -v "$myip" | grep -Ev "$LOCAL_IP" | grep -Eo '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | sort | uniq -c | sort -nr | head -n 10 | while read IP_COUNT IP ; do
+    grep -h $(date +"%d/%b/%Y:%H:") $access_log |grep -v "$myip" | grep -Ev "${LOCAL_IP}" | grep -v "$myip" | awk '{print $1}' | sort | uniq -c | sort -nr | head -n 10 | while read IP_COUNT IP ; do
     if command -v whois &> /dev/null; then
         whois_ip=$(whois $IP |grep -i "country" | awk '{print $NF}' |sort | uniq -c | sort -nr | head -n 1 | awk '{print $NF}')
         aws=$(whois $IP |grep -i "amazon")
@@ -79,14 +80,14 @@ rm -f apache_output.txt
     echo "↓"$(date --date="-1 hour" "+%Y/%m/%d %H"時代\(現在時刻\)のアクセス)"↓"
     echo "-----------------------------------------------------------------------------"
     echo "ドメイン 最多IP(/32) 最多IP(/24) 最多IP(/16)" >> apache_output.txt 
-    grep -h $(date --date="-1 hour" +"%d/%b/%Y:%H:") ${access_log} | grep -Ev "${LOCAL_IP}" | grep -v "$myip" | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 10 | while read count domain ; do
-        count_and_ip=$(grep -h $(date --date="-1 hour" +"%d/%b/%Y:%H:") ${access_log} | grep $domain | awk '{print $1}' | sort | uniq -c | sort -nr | head -n 1 )
+    grep -h $(date --date="-1 hour" +"%d/%b/%Y:%H:") $access_log | grep -Ev "${LOCAL_IP}" | grep -v "$myip" | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 10 | while read count domain ; do
+        count_and_ip=$(grep -h $(date --date="-1 hour" +"%d/%b/%Y:%H:") $access_log | grep $domain | awk '{print $1}' | sort | uniq -c | sort -nr | head -n 1 )
         ip_count=$(echo ${count_and_ip} | awk '{print $1}')
         ip=$(echo ${count_and_ip} | awk '{print $2}')
-        count_and_ip_24=$(grep -h $(date --date="-1 hour" +"%d/%b/%Y:%H:") ${access_log} | grep $domain | grep -Ev "${LOCAL_IP}" | grep -Eo '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.' | sort | uniq -c | sort -nr | head -n 1 )
+        count_and_ip_24=$(grep -h $(date --date="-1 hour" +"%d/%b/%Y:%H:") $access_log | grep $domain | grep -Ev "${LOCAL_IP}" | grep -Eo '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.' | sort | uniq -c | sort -nr | head -n 1 )
         ip_count_24=$(echo ${count_and_ip_24} | awk '{print $1}')
         ip_24=$(echo ${count_and_ip_24} | awk '{print $2}')
-        count_and_ip_16=$(grep -h $(date --date="-1 hour" +"%d/%b/%Y:%H:") ${access_log} | grep $domain | grep -Ev "${LOCAL_IP}" | grep -Eo '^[0-9]{1,3}\.[0-9]{1,3}\.' | sort | uniq -c | sort -nr | head -n 1 )
+        count_and_ip_16=$(grep -h $(date --date="-1 hour" +"%d/%b/%Y:%H:") $access_log | grep $domain | grep -Ev "${LOCAL_IP}" | grep -Eo '^[0-9]{1,3}\.[0-9]{1,3}\.' | sort | uniq -c | sort -nr | head -n 1 )
         ip_count_16=$(echo ${count_and_ip_16} | awk '{print $1}')
         ip_16=$(echo ${count_and_ip_16} | awk '{print $2}')
         echo "[${count}]${domain} [${ip_count}]${ip} [${ip_count_24}]${ip_24} [${ip_count_16}]${ip_16}" >> apache_output.txt
@@ -94,7 +95,7 @@ rm -f apache_output.txt
     column -t < apache_output.txt
     echo ""
     echo "whois check"
-    grep -h $(date --date="-1 hour" +"%d/%b/%Y:%H:") ${access_log} |grep -v "$myip" | grep -Ev "${LOCAL_IP}" | grep -Eo '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | sort | uniq -c | sort -nr | head -n 10 | while read IP_COUNT IP ; do
+    grep -h $(date --date="-1 hour" +"%d/%b/%Y:%H:") $access_log | grep -v "$myip" | grep -Ev "${LOCAL_IP}" | grep -v "$myip" | awk '{print $1}' | sort | uniq -c | sort -nr | head -n 10 | while read IP_COUNT IP ; do
     if command -v whois &> /dev/null; then
         whois_ip=$(whois $IP |grep -i "country" | awk '{print $NF}' |sort | uniq -c | sort -nr | head -n 1 | awk '{print $NF}')
         aws=$(whois $IP |grep -i "amazon")
