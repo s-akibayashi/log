@@ -77,7 +77,7 @@ fi
 rm -f apache_output.txt
 
 #１時間前
-    echo "↓"$(date --date="-1 hour" "+%Y/%m/%d %H"時代\(現在時刻\)のアクセス)"↓"
+    echo "↓"$(date --date="-1 hour" "+%Y/%m/%d %H"時代\(１時間前\)のアクセス)"↓"
     echo "-----------------------------------------------------------------------------"
     echo "ドメイン 最多IP(/32) 最多IP(/24) 最多IP(/16)" >> apache_output.txt 
     grep -h $(date --date="-1 hour" +"%d/%b/%Y:%H:") $access_log | grep -Ev "${LOCAL_IP}" | grep -v "$myip" | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 10 | while read count domain ; do
